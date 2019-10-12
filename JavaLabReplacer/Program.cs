@@ -6,8 +6,8 @@ namespace JavaLabRelplacer
 {
     class Program
     {
-        static string documentDir;
-        static string documentPath;
+        static string documentDir = @".";
+        static string documentPath = @"doc.txt";
         const string PATTERN_BLANK = @"【代码\d*】(?=[^：\n])";
         const string PATTERN_ANSWER = @"(?<=【代码\d*】：).+";
         const string CODEBLOCK_START = "模板代码";
@@ -16,14 +16,17 @@ namespace JavaLabRelplacer
         private static ArrayList answerSet = new ArrayList();
         static void Main(string[] args)
         {
-            documentDir = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Path.GetDirectoryName(Path.GetDirectoryName(typeof(Program).Assembly.Location))));
-            documentPath = documentDir + @"\doc.txt";
             if (!File.Exists(documentPath))
             {
-                Console.WriteLine("[Error] 未能找到 " + documentPath);
-                Console.WriteLine("按任意键退出...");
-                Console.ReadKey();
-                return;
+                documentDir = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Path.GetDirectoryName(Path.GetDirectoryName(typeof(Program).Assembly.Location))));
+                documentPath = documentDir + @"\doc.txt";
+                if (!File.Exists(documentPath))
+                {
+                    Console.WriteLine("[Error] 未能找到 " + Path.GetDirectoryName(typeof(Program).Assembly.Location) + "\\doc.txt 或 " + documentPath);
+                    Console.WriteLine("按任意键退出...");
+                    Console.ReadKey();
+                    return;
+                }
             }
 
             // 时间记录
