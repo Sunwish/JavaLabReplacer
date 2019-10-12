@@ -112,6 +112,7 @@ namespace JavaLabRelplacer
             string result = "";
             try
             {
+                // 答案集与空白具体有对应关系
                 result = answerSet[indexOfReplace].ToString();
             }
             catch (ArgumentOutOfRangeException e)
