@@ -6,7 +6,8 @@ namespace JavaLabRelplacer
 {
     class Program
     {
-        const string documentPath = "doc.txt";
+        static string documentDir;
+        static string documentPath;
         const string PATTERN_BLANK = @"【代码\d*】(?=[^：\n])";
         const string PATTERN_ANSWER = @"(?<=【代码\d*】：).+";
         const string CODEBLOCK_START = "模板代码";
@@ -15,9 +16,12 @@ namespace JavaLabRelplacer
         private static ArrayList answerSet = new ArrayList();
         static void Main(string[] args)
         {
+            documentDir = Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Path.GetDirectoryName(Path.GetDirectoryName(typeof(Program).Assembly.Location))));
+            documentPath = documentDir + @"\doc.txt";
             if (!File.Exists(documentPath))
             {
-                Console.WriteLine("[Error] 未找到 doc.txt 文件，按任意键结束程序。");
+                Console.WriteLine("[Error] 未能找到 " + documentPath);
+                Console.WriteLine("按任意键退出...");
                 Console.ReadKey();
                 return;
             }
@@ -89,11 +93,12 @@ namespace JavaLabRelplacer
 
             // 写出最终结果到文本文件
             Console.WriteLine("[JavaLabReplacer] 正在写出处理结果...");
-            using (StreamWriter streamWriter = new StreamWriter("output.txt", false))
+            using (StreamWriter streamWriter = new StreamWriter(documentDir + @"\output.txt", false))
                 streamWriter.WriteLine(outputString);
 
             // 打印执行报告
-            Console.WriteLine("[JavaLabReplacer] 程序执行完毕，共处理 " + labIndex + " 个实验的 " + blanks.Count + " 个填空，结果已写出至 output.txt 中，全程耗时 " + DateTime.Now.Subtract(startTime).TotalMilliseconds + " ms");
+            Console.WriteLine("[JavaLabReplacer] 程序执行完毕，共处理 " + labIndex + " 个实验的 " + blanks.Count + " 个填空，");
+            Console.WriteLine("[JavaLabReplacer] 结果已写出至 " + documentDir + "\\output.txt，全程耗时 " + DateTime.Now.Subtract(startTime).TotalMilliseconds + " ms");
             Console.WriteLine("按任意键退出...");
             Console.ReadKey();
         }
