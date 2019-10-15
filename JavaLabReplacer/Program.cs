@@ -2,14 +2,15 @@
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Collections;
+using System.Diagnostics;
 namespace JavaLabRelplacer
 {
     class Program
     {
         static string documentDir = @".";
         static string documentPath = @"doc.txt";
-        const string PATTERN_BLANK = @"【代码\d*】(?=[^：\n])";
-        const string PATTERN_ANSWER = @"(?<=【代码\d*】：).+";
+        const string PATTERN_BLANK = @".{3}\d*】(?=[^：\n])";
+        const string PATTERN_ANSWER = @"(?<=.{3}\d*】.).+";
         const string CODEBLOCK_START = "模板代码";
         const string CODEBLOCK_END = "编译并运行该程序";
         private static int indexOfReplace = -1;
@@ -30,12 +31,15 @@ namespace JavaLabRelplacer
             }
 
             // 时间记录
-            DateTime startTime = DateTime.Now;
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            // DateTime startTime = DateTime.Now;
 
             // 读取文件流
-            StreamReader streamReader = new StreamReader(documentPath);
-            string document = streamReader.ReadToEnd();
-
+            string document;
+            using (StreamReader streamReader = new StreamReader(documentPath))
+                document = streamReader.ReadToEnd();
+            
             // 匹配待填空与答案
             Console.WriteLine("[JavaLabReplacer] 正在扫描文档...");
             MatchCollection blanks = Regex.Matches(document, PATTERN_BLANK);
@@ -100,8 +104,9 @@ namespace JavaLabRelplacer
                 streamWriter.WriteLine(outputString);
 
             // 打印执行报告
+            stopwatch.Stop();
             Console.WriteLine("[JavaLabReplacer] 程序执行完毕，共处理 " + labIndex + " 个实验的 " + blanks.Count + " 个填空，");
-            Console.WriteLine("[JavaLabReplacer] 结果已写出至 " + documentDir + "\\output.txt，全程耗时 " + DateTime.Now.Subtract(startTime).TotalMilliseconds + " ms");
+            Console.WriteLine("[JavaLabReplacer] 结果已写出至 " + documentDir + "\\output.txt，全程耗时 " + stopwatch.ElapsedMilliseconds /*DateTime.Now.Subtract(startTime).TotalMilliseconds*/ + " ms");
             Console.WriteLine("按任意键退出...");
             Console.ReadKey();
         }
